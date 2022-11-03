@@ -1,3 +1,14 @@
+# Usage RDD2022
+
+Edit `labels.txt` to change which labels to extract. Then:
+
+```bash
+pip install -r requirements.txt
+./make_RDD2022_coco.sh <path_to_RDD2022_folder>
+```
+
+This will create an output folder "RDD2022_COCO" with the annotations in COCO format.
+
 # voc2coco
 
 This is script for converting VOC format XMLs to COCO format json(ex. coco_eval.json).

@@ -6,11 +6,14 @@ from typing import Dict, List
 from tqdm import tqdm
 import re
 
+class MissingLabelException(Exception):
+    pass
+
 
 def get_label2id(labels_path: str) -> Dict[str, int]:
     """id is 1 start"""
     with open(labels_path, 'r') as f:
-        labels_str = f.read().split()
+        labels_str = f.read().split("\n")
     labels_ids = list(range(1, len(labels_str)+1))
     return dict(zip(labels_str, labels_ids))
 
@@ -59,7 +62,8 @@ def get_image_info(annotation_root, extract_num_from_imgid=True):
 
 def get_coco_annotation_from_obj(obj, label2id):
     label = obj.findtext('name')
-    assert label in label2id, f"Error: {label} is not in label2id !"
+    if not label in label2id:
+        raise MissingLabelException(f"Error: {label} is not in label2id!")
     category_id = label2id[label]
     bndbox = obj.find('bndbox')
     xmin = int(float(bndbox.findtext('xmin'))) - 1
@@ -103,7 +107,10 @@ def convert_xmls_to_cocojson(annotation_paths: List[str],
         output_json_dict['images'].append(img_info)
 
         for obj in ann_root.findall('object'):
-            ann = get_coco_annotation_from_obj(obj=obj, label2id=label2id)
+            try:
+                ann = get_coco_annotation_from_obj(obj=obj, label2id=label2id)
+            except MissingLabelException:
+                continue
             ann.update({'image_id': img_id, 'id': bnd_id})
             output_json_dict['annotations'].append(ann)
             bnd_id = bnd_id + 1
