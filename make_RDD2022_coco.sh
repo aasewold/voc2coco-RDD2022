@@ -1,40 +1,46 @@
 #!/bin/bash
 
-RDD2022_PATH=$1
-OUTPUT_DIR=RDD2022_COCO
+RDD2022_ALL_PATH=$1
 
-if [ ! -d "$RDD2022_PATH" ]; then
-    echo "Error: $RDD2022_PATH is not a valid path"
+if [ ! -d "$RDD2022_ALL_PATH" ]; then
+    echo "Error: $RDD2022_ALL_PATH is not a valid path"
     exit 1
 fi
 
+INPUT_ANNOTATIONS_PATH=${RDD2022_ALL_PATH}/annotations
 
+OUTPUT_DIR_ANNOTATIONS=RDD2022_COCO/annotations/
 
-if [ ! -d $OUTPUT_DIR ]; then
-    mkdir $OUTPUT_DIR
+if [ ! -d $OUTPUT_DIR_ANNOTATIONS ]; then
+    mkdir -p $dir
 fi
 
-for country in China_Drone China_MotorBike Czech India Japan Norway
-do
 
-    echo "Processing ${country}..."
-    ANNOTATION_PATH=${RDD2022_PATH}/${country}/train/annotations/xmls/
+find $INPUT_ANNOTATIONS_PATH -type f | shuf > temp_path_list.txt
 
-    find $ANNOTATION_PATH -type f | sort > temp_path_list.txt
+IMAGE_COUNT=$(wc -l < temp_path_list.txt)
+VAL_IMAGE_COUNT=$(echo "scale=0; $IMAGE_COUNT * 0.25 / 1" | bc)
+TRAIN_IMAGE_COUNT=$(echo "$IMAGE_COUNT - $VAL_IMAGE_COUNT" | bc)
 
-    JSON_OUTPUT_PATH=$OUTPUT_DIR/${country}/train
+echo "Total images: $IMAGE_COUNT"
+echo "Train images: $TRAIN_IMAGE_COUNT"
+echo "Val images: $VAL_IMAGE_COUNT"
 
-    if [ ! -d $JSON_OUTPUT_PATH ]; then
-        mkdir -p $JSON_OUTPUT_PATH
-    fi
+head -n $TRAIN_IMAGE_COUNT temp_path_list.txt > temp_path_list_train.txt
+tail -n $VAL_IMAGE_COUNT temp_path_list.txt > temp_path_list_val.txt
 
-    python voc2coco.py \
-        --ann_paths_list temp_path_list.txt \
-        --labels labels.txt \
-        --output $JSON_OUTPUT_PATH/annotations.json
+python voc2coco.py \
+    --ann_paths_list temp_path_list_train.txt \
+    --labels labels.txt \
+    --output $OUTPUT_DIR_ANNOTATIONS/train.json
 
-done
+python voc2coco.py \
+    --ann_paths_list temp_path_list_val.txt \
+    --labels labels.txt \
+    --output $OUTPUT_DIR_ANNOTATIONS/val.json
 
 rm temp_path_list.txt
+rm temp_path_list_train.txt
+rm temp_path_list_val.txt
 
 echo "Done!"
