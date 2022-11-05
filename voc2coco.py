@@ -4,7 +4,15 @@ import json
 import xml.etree.ElementTree as ET
 from typing import Dict, List
 from tqdm import tqdm
-import re
+
+COUNTRY_TO_INT = {
+    "China_Drone": 1,
+    "China_MotorBike": 2,
+    "Czech": 3,
+    "India": 4,
+    "Japan": 5,
+    "Norway": 6,
+}
 
 class MissingLabelException(Exception):
     pass
@@ -45,7 +53,13 @@ def get_image_info(annotation_root, extract_num_from_imgid=True):
     img_name = os.path.basename(filename)
     img_id = os.path.splitext(img_name)[0]
     if extract_num_from_imgid and isinstance(img_id, str):
-        img_id = int(re.findall(r'\d+', img_id)[0])
+        try:
+            country, rest = img_id.rsplit('_', 1)
+            country_int = COUNTRY_TO_INT[country]
+        except KeyError:
+            raise KeyError(f"Error: {img_id} is not in COUNTRY_TO_INT!")
+        img_id = int(rest.split(".")[0])
+        img_id = int(str(country_int) + str(img_id))
 
     size = annotation_root.find('size')
     width = int(size.findtext('width'))

@@ -32,12 +32,14 @@ tail -n $VAL_IMAGE_COUNT temp_path_list.txt > temp_path_list_val.txt
 python voc2coco.py \
     --ann_paths_list temp_path_list_train.txt \
     --labels labels.txt \
-    --output $OUTPUT_DIR_ANNOTATIONS/train.json
+    --output $OUTPUT_DIR_ANNOTATIONS/train.json \
+    --extract_num_from_imgid
 
 python voc2coco.py \
     --ann_paths_list temp_path_list_val.txt \
     --labels labels.txt \
-    --output $OUTPUT_DIR_ANNOTATIONS/val.json
+    --output $OUTPUT_DIR_ANNOTATIONS/val.json \
+    --extract_num_from_imgid
 
 rm temp_path_list.txt
 rm temp_path_list_train.txt
