@@ -1,13 +1,13 @@
 #!/bin/bash
 
-RDD2022_ALL_PATH=$1
+RDD2022_PATH=$1
 
-if [ ! -d "$RDD2022_ALL_PATH" ]; then
-    echo "Error: $RDD2022_ALL_PATH is not a valid path"
+if [ ! -d "$RDD2022_PATH" ]; then
+    echo "Error: $RDD2022_PATH is not a valid path"
     exit 1
 fi
 
-INPUT_ANNOTATIONS_PATH=${RDD2022_ALL_PATH}/annotations
+INPUT_ANNOTATIONS_PATH=${RDD2022_PATH}/annotations
 
 OUTPUT_DIR_ANNOTATIONS=RDD2022_COCO/annotations/
 

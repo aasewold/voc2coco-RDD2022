@@ -7,8 +7,9 @@ pip install -r requirements.txt
 ./make_RDD2022_coco.sh <path_to_RDD2022_folder>
 ```
 
-This will create an output folder "RDD2022_COCO" with the annotations in COCO format.
+The `<path_to_RDD2022_folder>` should contain two folders: `annotations` and `images`.
 
+The script will create an output folder "RDD2022_COCO" with the annotations in COCO format. The script does a train/val split (3 to 1).
 # voc2coco
 
 This is script for converting VOC format XMLs to COCO format json(ex. coco_eval.json).
