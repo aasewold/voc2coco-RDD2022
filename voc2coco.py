@@ -12,6 +12,7 @@ COUNTRY_TO_INT = {
     "India": 4,
     "Japan": 5,
     "Norway": 6,
+    "United_States": 7,
 }
 
 class MissingLabelException(Exception):
