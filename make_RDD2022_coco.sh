@@ -9,10 +9,10 @@ fi
 
 INPUT_ANNOTATIONS_PATH=${RDD2022_PATH}/annotations
 
-OUTPUT_DIR_ANNOTATIONS=RDD2022_COCO/annotations/
+OUTPUT_DIR_ANNOTATIONS=RDD2022_COCO/annotations
 
 if [ ! -d $OUTPUT_DIR_ANNOTATIONS ]; then
-    mkdir -p $dir
+    mkdir -p $OUTPUT_DIR_ANNOTATIONS
 fi
 
 
